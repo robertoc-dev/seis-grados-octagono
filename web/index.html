@@ -225,7 +225,7 @@ D.fights.forEach((f, k) => {
 const DIV_ES = {"Heavyweight":"Peso pesado","Light Heavyweight":"Peso semipesado","Middleweight":"Peso medio","Welterweight":"Peso wélter","Lightweight":"Peso ligero","Featherweight":"Peso pluma","Bantamweight":"Peso gallo","Flyweight":"Peso mosca","Women's Strawweight":"Peso paja femenino","Women's Flyweight":"Peso mosca femenino","Women's Bantamweight":"Peso gallo femenino"};
 const RK = D.rankings;
 const RANK = new Map();
-if (RK) RK.divisions.forEach(([div, ids]) => ids.forEach((i, pos) => { if (i >= 0 && !RANK.has(i)) RANK.set(i, {div, pos}); }));
+if (RK) RK.divisions.forEach(([div, ids]) => ids.forEach((i, pos) => { if (i >= 0 && (!RANK.has(i) || pos < RANK.get(i).pos)) RANK.set(i, {div, pos}); }));
 const RANKED = new Set(RANK.keys());
 const rankShort = i => { const r = RANK.get(i); return r ? (r.pos === 0 ? "Campeón" : "#" + r.pos) : ""; };
 const rankLabel = i => { const r = RANK.get(i); return r ? `${rankShort(i)} ${DIV_ES[r.div] || r.div}` : ""; };
