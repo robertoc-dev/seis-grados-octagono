@@ -1,0 +1,77 @@
+name: Actualizar datos y publicar
+
+on:
+  schedule:
+    # Horas en UTC. El Salvador es UTC-6.
+    - cron: "17 14 * * 0"   # domingo 8:17 a.m. (El Salvador): peleas del sábado
+    - cron: "17 2 * * 4"    # miércoles 8:17 p.m. (El Salvador): rankings oficiales, que salen los martes
+  workflow_dispatch:         # botón "Run workflow" para correrlo a mano
+  push:
+    branches: [main]
+    paths: ["web/**", "scripts/**", "data/rankings.json", ".github/workflows/**"]
+
+permissions:
+  contents: write   # para guardar los datos nuevos en el repositorio
+  pages: write      # para publicar en GitHub Pages
+  id-token: write
+
+concurrency:
+  group: actualizar
+  cancel-in-progress: false
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Actualizar rankings
+        # Si ufc.com falla o cambia su página, el script avisa y deja los rankings anteriores
+        run: python scripts/update_rankings.py --file data/rankings.json
+
+      - name: Generar base de peleas
+        # Si los datos de origen vienen incompletos, este paso falla y el sitio publicado no cambia
+        run: >
+          python scripts/build_game_data.py
+          --rankings data/rankings.json
+          --out web/data/game_data.json
+          | tee resumen.txt
+
+      - name: Resumen
+        run: |
+          echo "### Datos del juego" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat resumen.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Guardar cambios en el repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/rankings.json web/data/game_data.json
+          if git diff --cached --quiet; then
+            echo "Sin datos nuevos."
+          else
+            git commit -m "Datos actualizados $(date -u +%Y-%m-%d)"
+            git push
+          fi
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
