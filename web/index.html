@@ -7,181 +7,222 @@
 <meta property="og:title" content="Seis Grados del Octágono">
 <meta property="og:description" content="Reto diario de MMA: conecta a dos peleadores de UFC con una cadena de rivales en seis grados o menos.">
 <meta property="og:type" content="website">
+<!--HEAD-->
 <title>Seis Grados del Octágono</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Archivo:wght@400;500;600;700&family=Martian+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Big+Shoulders+Display:wght@700;900&display=swap">
 <style>
-/* Layout: una sola columna tipo "tale of the tape": esquina roja arriba, cadena de rivales en medio, esquina azul abajo */
+/* Concepto: cartel de pelea impreso. Cara a cara arriba (el elemento audaz), cartelera de combates debajo, todo lo demás sobrio. */
 :root{
   color-scheme:light;
-  --canvas:#edf0f3; --surface:#ffffff; --ink:#141a22; --muted:#5a6472; --line:#cdd4dc;
-  --red:#c51f2e; --red-soft:#fbe4e6; --blue:#1d4fb8; --blue-soft:#e2eafb; --win:#1d7748; --win-soft:#dff2e7;
+  --paper:#f2f3f1; --sheet:#ffffff; --ink:#16181d; --muted:#626873; --rule:#d5d8dc;
+  --red:#cf2129; --blue:#1d4ed0; --gold:#b98d12; --win:#18794a;
+  --red-wash:#fbe7e7; --blue-wash:#e5ecfb;
   --display:"Big Shoulders Display",Impact,"Arial Narrow",sans-serif;
-  --body:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"Martian Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --body:"Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --canvas:#0e131a; --surface:#161d27; --ink:#e7ecf2; --muted:#94a1b1; --line:#2b3544;
-  --red:#f0525b; --red-soft:#3a1a1f; --blue:#6b95ff; --blue-soft:#18264a; --win:#43c383; --win-soft:#12301f; color-scheme:dark}}
+  --paper:#101318; --sheet:#181c23; --ink:#eceef2; --muted:#98a0ad; --rule:#2c323d;
+  --red:#ff4f55; --blue:#6f90ff; --gold:#e3bd4c; --win:#45c486;
+  --red-wash:#2e171a; --blue-wash:#18213b; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --canvas:#0e131a; --surface:#161d27; --ink:#e7ecf2; --muted:#94a1b1; --line:#2b3544;
-  --red:#f0525b; --red-soft:#3a1a1f; --blue:#6b95ff; --blue-soft:#18264a; --win:#43c383; --win-soft:#12301f; color-scheme:dark}
+  --paper:#101318; --sheet:#181c23; --ink:#eceef2; --muted:#98a0ad; --rule:#2c323d;
+  --red:#ff4f55; --blue:#6f90ff; --gold:#e3bd4c; --win:#45c486;
+  --red-wash:#2e171a; --blue-wash:#18213b; color-scheme:dark}
 
 [hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{background:var(--canvas);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
-.wrap{max-width:560px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:18px}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 16px/1.45 var(--body)}
+.wrap{max-width:620px;margin:0 auto;padding-block:max(16px,env(safe-area-inset-top,0px)) max(48px,env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 
-header{display:flex;flex-direction:column;gap:4px}
-.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-h1{font-family:var(--display);font-weight:900;font-size:clamp(38px,10vw,56px);line-height:.92;margin:0;letter-spacing:.01em;text-transform:uppercase;text-wrap:balance}
-h1 .six{color:var(--red)}
-.tagline{color:var(--muted);margin:6px 0 0;max-width:60ch}
+/* Cabecera */
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+.mark{margin:0;font:900 26px/0.9 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.mark small{display:block;font:600 14px/1.2 var(--cond);text-transform:none;letter-spacing:0;color:var(--muted);margin-top:4px}
+.switches{display:flex;flex-wrap:wrap;gap:8px}
+@media (min-width:600px){.switches{flex-direction:column;align-items:flex-end}}
+.seg{display:inline-flex;border:1.5px solid var(--ink);border-radius:999px;padding:2px;gap:2px}
+.seg button{border:0;background:transparent;font:600 15px/1 var(--cond);padding:7px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.diff{display:flex;gap:6px;align-items:center;font:500 14px var(--cond);color:var(--muted)}
+.diff button{width:32px;height:32px;border:1.5px solid var(--rule);background:var(--sheet);border-radius:8px;font:700 15px var(--cond);cursor:pointer}
+.diff button[aria-pressed="true"]{border-color:var(--ink)}
 
-.tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.tab{font:600 13px var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:999px;cursor:pointer}
-.tab[aria-pressed="true"]{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
-.diff{display:flex;gap:4px;margin-left:auto;align-items:center;font-size:12px;color:var(--muted)}
-.diff button{font:500 12px var(--mono);border:1px solid var(--line);background:transparent;color:var(--ink);width:30px;height:30px;border-radius:6px;cursor:pointer}
-.diff button[aria-pressed="true"]{border-color:var(--ink);background:var(--surface)}
+/* Cara a cara */
+.faceoff{position:relative;background:var(--sheet);border-radius:18px;padding:14px 14px 12px;overflow:hidden;isolation:isolate}
+.faceoff::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.07;
+  background:repeating-linear-gradient(45deg,var(--ink) 0 1px,transparent 1px 22px),repeating-linear-gradient(-45deg,var(--ink) 0 1px,transparent 1px 22px)}
+.fo-label{margin:0 0 10px;text-align:center;font:600 15px var(--cond);color:var(--muted)}
+.fo-grid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;gap:6px}
+.fo-side{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fo-side.blue{align-items:flex-end;text-align:right}
+.fo-crest{position:relative;width:min(112px,100%);aspect-ratio:1;max-width:100%}
+@media (min-width:600px){.fo-crest{width:min(140px,100%)}}
+.fo-crest canvas{width:100%;height:100%;display:block}
+.fo-corner{font:600 14px var(--cond)}
+.red .fo-corner{color:var(--red)} .blue .fo-corner{color:var(--blue)}
+.fo-name{margin:0;font:900 clamp(27px,8.4vw,46px)/.86 var(--display);text-transform:uppercase;overflow-wrap:anywhere;hyphens:auto}
+.fo-name span{display:block}
+.fo-name .last{color:var(--ink)}
+.red .fo-name .first{color:var(--red)} .blue .fo-name .first{color:var(--blue)}
+.fo-nick{margin:0;font:italic 500 15px/1.2 var(--body);color:var(--muted)}
+.fo-rank{display:inline-flex;align-self:flex-start;gap:5px;align-items:center;font:700 13px/1 var(--cond);padding:5px 8px;border-radius:6px;background:var(--paper);color:var(--ink)}
+.blue .fo-rank{align-self:flex-end}
+.fo-rank.champ{background:var(--gold);color:#1b1503}
+.fo-vs{align-self:center;margin-top:-40px;font:900 30px/1 var(--display);color:var(--ink);padding:0 2px}
+.stamp{position:absolute;inset:auto 0 8% 0;margin:auto;width:max-content;transform:rotate(-9deg);font:900 20px/1 var(--display);text-transform:uppercase;color:var(--win);border:3px solid var(--win);border-radius:6px;padding:4px 8px;background:var(--sheet)}
+.stamp.lost{color:var(--red);border-color:var(--red)}
 
-.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:var(--surface);border-radius:10px;overflow:hidden}
-.scoreboard > div{padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}
-.scoreboard > div + div{border-left:1px solid var(--line)}
-.sb-label{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.sb-value{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
-.gloves{display:flex;gap:5px;padding-top:4px}
-.gloves span{width:14px;height:14px;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:var(--line)}
-.gloves span.hit{background:var(--red)}
+.tape{margin:12px 0 0;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);border-top:2px solid var(--ink)}
+.tape > *{padding:4px 0;border-bottom:1px solid var(--rule);font-variant-numeric:tabular-nums}
+.tape dt{text-align:center;font:500 14px var(--cond);color:var(--muted);padding-inline:10px;display:flex;align-items:center;justify-content:center}
+.tape dd{margin:0;font:700 17px/1.2 var(--cond);min-width:0;overflow-wrap:anywhere}
+.tape .l{text-align:left} .tape .r{text-align:right}
+.tape .adv.l{color:var(--red)} .tape .adv.r{color:var(--blue)}
+.tape .na{color:var(--muted);font-weight:500}
 
-.board{display:flex;flex-direction:column}
-.corner{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;border:2px solid currentColor;background:var(--surface)}
-.corner.red{color:var(--red);background:var(--red-soft)}
-.corner.blue{color:var(--blue);background:var(--blue-soft)}
-.corner.blue.reached{color:var(--win);background:var(--win-soft)}
-.corner .meta{display:flex;flex-direction:column;min-width:0}
-.corner .side{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase}
-.corner .name{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;color:var(--ink);text-transform:uppercase;overflow-wrap:anywhere}
-.corner .sub{font-size:12px;color:var(--muted)}
-.oct{flex:none;width:44px;height:44px;display:grid;place-items:center;clip-path:polygon(30% 0,70% 0,100% 30%,100% 70%,70% 100%,30% 100%,0 70%,0 30%);background:currentColor;color:var(--surface);font-family:var(--display);font-weight:900;font-size:20px}
-.corner .oct{color:inherit}
-.corner .oct span{color:var(--surface)}
+/* Marcador */
+.status{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;font:600 15px var(--cond)}
+.st{display:flex;align-items:center;gap:8px}
+.st b{font-weight:600;color:var(--muted)}
+.pips{display:flex;gap:4px}
+.pip{width:14px;height:14px;clip-path:polygon(29% 0,71% 0,100% 29%,100% 71%,71% 100%,29% 100%,0 71%,0 29%);background:var(--rule)}
+.pip.on{background:var(--ink)} .pip.bad{background:var(--red)} .pip.hint{background:var(--blue)}
+.daylabel{margin-left:auto;color:var(--muted);font-weight:500}
 
-.link{display:flex;align-items:center;gap:10px;padding-left:34px;min-height:26px}
-.link::before{content:"";width:2px;align-self:stretch;background:var(--line);margin-left:-13px}
-.link small{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.link{padding-block:4px}
-.link .fight{display:flex;flex-direction:column;gap:1px;min-width:0}
-.link .fight span{font-size:13px;color:var(--ink)}
-.step{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-.step .oct{width:32px;height:32px;font-size:15px;background:var(--ink);color:var(--surface)}
-.step .nm{font-weight:600;flex:1;min-width:0;overflow-wrap:anywhere}
-.step .tag{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.step.hinted .tag{color:var(--blue)}
-.step.fresh{animation:pop .35s ease-out}
-@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:none;opacity:1}}
+/* Cartelera (la cadena) */
+.card{display:flex;flex-direction:column}
+.fighter{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:center;padding:8px 0}
+.fighter canvas{width:48px;height:48px;display:block}
+.f-name{font:900 22px/1 var(--display);text-transform:uppercase;overflow-wrap:anywhere}
+.f-nick{font:italic 500 14px/1.2 var(--body);color:var(--muted)}
+.f-meta{font:600 14px var(--cond);color:var(--muted);text-align:right;white-space:nowrap}
+.f-meta.champ{color:var(--gold)}
+.fighter.goal{opacity:.55}
+.fighter.goal.reached{opacity:1}
+.fighter.hinted .f-meta{color:var(--blue)}
+.fighter.fresh{animation:land .35s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes land{from{transform:translateX(-10px)}to{transform:none}}
 
-.entry{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px;border:2px dashed var(--line);border-radius:10px;background:var(--surface)}
-.entry label{font-size:13px;color:var(--muted)}
-.entry label b{color:var(--ink)}
-.entry input{font:500 16px var(--body);width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--canvas);color:var(--ink)}
-.entry input:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.bout{position:relative;margin-left:23px;padding:6px 0 6px 25px;border-left:2px solid var(--ink)}
+.bout.open{border-left-style:dashed;border-left-color:var(--muted)}
+.bout p{margin:0}
+.bout-ev{font:600 14px var(--cond);color:var(--muted)}
+.bout-res{font:500 15px/1.3 var(--body)}
+
+.entry{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:14px;background:var(--sheet);border:2px dashed var(--rule)}
+.entry label{font:600 15px var(--cond);color:var(--muted)}
+.entry label b{color:var(--ink);font-weight:700}
+.entry input{font:600 18px var(--body);width:100%;box-sizing:border-box;padding:12px 14px;border:2px solid var(--ink);border-radius:10px;background:var(--paper);color:var(--ink)}
+.entry input::placeholder{color:var(--muted);font-weight:500}
 .entry.shake{animation:shake .4s}
 @keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
-.sugs{list-style:none;margin:0;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--surface);display:flex;flex-direction:column;gap:2px;max-height:280px;overflow:auto}
-.sugs button{all:unset;box-sizing:border-box;width:100%;padding:9px 10px;border-radius:6px;cursor:pointer;display:flex;justify-content:space-between;gap:8px}
-.sugs button[aria-selected="true"],.sugs button:hover{background:var(--canvas)}
+.sugs{list-style:none;margin:0;padding:4px;display:flex;flex-direction:column;gap:2px;max-height:330px;overflow:auto}
+.sugs button{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 8px;border-radius:8px;cursor:pointer}
+.sugs button canvas{width:30px;height:30px;display:block}
+.sugs button[aria-selected="true"],.sugs button:hover{background:var(--paper)}
 .sugs button:focus-visible{outline:2px solid var(--blue)}
-.sugs .used{color:var(--muted);text-decoration:line-through}
-.sugs small{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.s-name{font-weight:600;overflow-wrap:anywhere}
+.s-name small{display:block;font:italic 500 13px var(--body);color:var(--muted)}
+.s-meta{font:600 13px var(--cond);color:var(--muted);white-space:nowrap}
+.s-empty{padding:8px;color:var(--muted)}
+.used{text-decoration:line-through;color:var(--muted)}
 
-.msg{min-height:22px;font-size:14px;margin:0}
+.msg{margin:0;min-height:1.45em;font-weight:500}
 .msg.bad{color:var(--red)} .msg.good{color:var(--win)}
 
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn{font:600 14px var(--body);padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.primary{background:var(--ink);color:var(--canvas);border-color:var(--ink)}
-.btn:focus-visible,.tab:focus-visible,.diff button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:1.5px solid var(--ink);background:transparent;font:700 16px var(--cond);padding:9px 16px;border-radius:999px;cursor:pointer}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.quiet{border-color:var(--rule);color:var(--muted)}
 
-.result{border:2px solid var(--ink);border-radius:12px;padding:16px;background:var(--surface);display:flex;flex-direction:column;gap:12px}
-.result h2{font-family:var(--display);font-weight:900;font-size:32px;line-height:1;margin:0;text-transform:uppercase;text-wrap:balance}
+/* Resultado */
+.result{display:flex;flex-direction:column;gap:14px;padding:18px;border-radius:18px;background:var(--sheet)}
+.result h2{margin:0;font:900 clamp(34px,10vw,52px)/.88 var(--display);text-transform:uppercase;text-wrap:balance}
 .result.won h2{color:var(--win)} .result.lost h2{color:var(--red)}
 .result p{margin:0}
-.paths{display:grid;grid-template-columns:1fr;gap:10px}
-.path{font-size:13px}
-.path .sb-label{display:block;margin-bottom:2px}
-.share{font-family:var(--mono);font-size:12px;white-space:pre-wrap;background:var(--canvas);border-radius:8px;padding:10px;margin:0;overflow-x:auto}
+.path b{display:block;font:600 14px var(--cond);color:var(--muted)}
+.share{margin:0;padding:12px;border-radius:10px;background:var(--paper);font:500 14px/1.5 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;overflow-x:auto}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center;border-top:2px solid var(--ink);padding-top:10px}
+.stats b{display:block;font:900 30px/1 var(--display);font-variant-numeric:tabular-nums}
+.stats span{font:500 13px var(--cond);color:var(--muted)}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}
-.stats div{display:flex;flex-direction:column}
-.stats b{font-family:var(--display);font-size:24px;font-variant-numeric:tabular-nums}
-.stats span{font-size:11px;color:var(--muted)}
-
-.pool{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
-.pool > span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-right:2px}
-.seg{font:600 13px var(--body);border:1px solid var(--line);background:transparent;color:var(--ink);padding:7px 12px;border-radius:6px;cursor:pointer}
-.seg[aria-pressed="true"]{background:var(--surface);border-color:var(--ink);box-shadow:inset 0 -2px 0 var(--red)}
-.seg:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.rk{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px;margin-top:12px}
-.rk-div{min-width:0}
-.rk h3{font-family:var(--display);font-weight:700;font-size:20px;text-transform:uppercase;margin:0 0 4px}
-.rk ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;font-size:13px}
-.rk li{display:flex;gap:8px;align-items:baseline}
+/* Pie */
+details{border-top:1px solid var(--rule);padding-top:14px}
+summary{cursor:pointer;font:700 17px var(--cond)}
+details ol{margin:10px 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;max-width:62ch}
+.fine{font-size:14px;color:var(--muted);max-width:62ch}
+.rk{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;margin-top:12px}
+.rk h3{margin:0 0 4px;font:900 20px var(--display);text-transform:uppercase}
+.rk ol{list-style:none;padding:0;margin:0;gap:2px;font-size:14px}
+.rk li{display:flex;gap:8px}
 .rk li.in{font-weight:700}
-.rk li.end{color:var(--red)}
-.rk-n{font-family:var(--mono);font-size:10px;color:var(--muted);width:18px;text-align:right;flex:none;font-variant-numeric:tabular-nums}
-details{border-top:1px solid var(--line);padding-top:14px}
-summary{cursor:pointer;font-weight:600}
-details ol{padding-left:20px;margin:10px 0;display:flex;flex-direction:column;gap:6px}
-details p{color:var(--muted);font-size:13px;max-width:62ch}
+.rk li.end{color:var(--red);font-weight:700}
+.rk-n{width:20px;flex:none;text-align:right;font:600 13px var(--cond);color:var(--muted);font-variant-numeric:tabular-nums}
+.rk-n.c{color:var(--gold)}
 
-@media (prefers-reduced-motion: reduce){.step.fresh,.entry.shake{animation:none}}
+/* Momento de entrada: las esquinas se acercan y aparece el "vs" */
+.faceoff.enter .red{animation:inL .5s cubic-bezier(.2,.8,.2,1)}
+.faceoff.enter .blue{animation:inR .5s cubic-bezier(.2,.8,.2,1)}
+.faceoff.enter .fo-vs{animation:vs .45s .25s cubic-bezier(.3,1.6,.5,1) backwards}
+.stamp.pop{animation:stamp .35s cubic-bezier(.3,1.5,.5,1)}
+@keyframes inL{from{transform:translateX(-28px)}to{transform:none}}
+@keyframes inR{from{transform:translateX(28px)}to{transform:none}}
+@keyframes vs{from{transform:scale(1.8)}to{transform:none}}
+@keyframes stamp{from{transform:rotate(-9deg) scale(1.8)}to{transform:rotate(-9deg) scale(1)}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}
+@media (max-width:380px){.fo-vs{font-size:24px}.tape dt{padding-inline:6px}}
 </style>
+<!--/HEAD-->
 </head>
 <body>
-
-
-<div class="wrap">
-  <header>
-    <span class="eyebrow" id="eyebrow">Reto diario</span>
-    <h1><span class="six">Seis grados</span><br>del octágono</h1>
-    <p class="tagline">Conecta a los dos peleadores con una cadena de rivales: cada eslabón tiene que haber peleado contra el anterior dentro de UFC.</p>
+<!--BODY-->
+<main class="wrap">
+  <header class="top">
+    <h1 class="mark">Seis grados<br>del octágono<small>Conecta a los dos peleadores con una cadena de rivales</small></h1>
+    <div class="switches">
+      <div class="seg" role="group" aria-label="Modo de juego">
+        <button id="tab-daily" aria-pressed="true">Reto de hoy</button>
+        <button id="tab-practice" aria-pressed="false">Práctica</button>
+      </div>
+      <div class="seg" id="pool" role="group" aria-label="Peleadores que cuentan">
+        <button id="pool-all" aria-pressed="true">Toda la historia</button>
+        <button id="pool-ranked" aria-pressed="false">Solo rankeados</button>
+      </div>
+    </div>
   </header>
 
-  <div class="tabs" role="group" aria-label="Modo de juego">
-    <button class="tab" id="tab-daily" aria-pressed="true">Reto diario</button>
-    <button class="tab" id="tab-practice" aria-pressed="false">Práctica</button>
-    <div class="diff" id="diff" hidden>
-      <span>Grados</span>
-      <button data-d="2" aria-pressed="false">2</button>
-      <button data-d="3" aria-pressed="true">3</button>
-      <button data-d="4" aria-pressed="false">4</button>
-    </div>
+  <div class="diff" id="diff" hidden>
+    Grados de la ruta más corta
+    <button data-d="2" aria-pressed="false">2</button>
+    <button data-d="3" aria-pressed="true">3</button>
+    <button data-d="4" aria-pressed="false">4</button>
   </div>
 
-  <div class="pool" id="pool" role="group" aria-label="Peleadores que cuentan">
-    <span>Peleadores</span>
-    <button class="seg" id="pool-all" aria-pressed="true">Toda la historia</button>
-    <button class="seg" id="pool-ranked" aria-pressed="false">Solo rankeados</button>
+  <section class="faceoff" id="faceoff" aria-label="Los dos peleadores a conectar">
+    <p class="fo-label">Cargando peleas…</p>
+  </section>
+
+  <div class="status" aria-live="polite">
+    <div class="st"><b>Grados</b><span class="pips" id="pips-steps"></span></div>
+    <div class="st"><b>Errores</b><span class="pips" id="pips-strikes"></span></div>
+    <div class="st"><b>Pistas</b><span class="pips" id="pips-hints"></span></div>
+    <span class="daylabel" id="daylabel"></span>
   </div>
 
-  <div class="scoreboard" aria-live="polite">
-    <div><span class="sb-label">Grados usados</span><span class="sb-value" id="sb-steps">0/6</span></div>
-    <div><span class="sb-label">Errores</span><div class="gloves" id="sb-strikes"><span></span><span></span><span></span></div></div>
-    <div><span class="sb-label">Pistas</span><span class="sb-value" id="sb-hints">2</span></div>
-  </div>
-
-  <section class="board" id="board" aria-label="Cadena de rivales"><p class="msg">Cargando peleas…</p></section>
+  <section class="card" id="board" aria-label="Tu cadena de rivales"></section>
 
   <p class="msg" id="msg" role="status"></p>
 
   <div class="actions" id="actions">
     <button class="btn" id="btn-hint">Pedir pista</button>
     <button class="btn" id="btn-undo">Deshacer</button>
-    <button class="btn" id="btn-quit">Tirar la toalla</button>
+    <button class="btn quiet" id="btn-quit">Tirar la toalla</button>
   </div>
 
   <section id="result" hidden></section>
@@ -189,30 +230,30 @@ details p{color:var(--muted);font-size:13px;max-width:62ch}
   <details>
     <summary>Cómo se juega</summary>
     <ol>
-      <li>Empiezas en la <b>esquina roja</b>. Escribe un peleador que se haya enfrentado a él en UFC.</li>
-      <li>Sigue la cadena: cada nuevo nombre debe haber peleado contra el último de tu lista.</li>
-      <li>Llega a la <b>esquina azul</b> en 6 grados o menos. El reto diario siempre se puede resolver en 3.</li>
-      <li>Un rival equivocado es un error. Con 3 errores pierdes por KO técnico.</li>
-      <li>Con <b>Solo rankeados</b> todos los eslabones deben ser campeones o top 15 actuales. Es el modo más fácil para empezar: el reto diario se resuelve en 2.</li>
-      <li>Las pistas agregan el siguiente peleador de una ruta óptima. Tienes 2.</li>
+      <li>Empiezas en la esquina roja. Escribe a alguien que se haya enfrentado a ese peleador en UFC.</li>
+      <li>Sigue la cadena: cada nombre nuevo tiene que haber peleado contra el último de tu lista.</li>
+      <li>Llega a la esquina azul en 6 grados o menos. El reto de hoy se resuelve en 3, o en 2 con Solo rankeados.</li>
+      <li>Con Solo rankeados, todos los eslabones deben ser campeones o top 15 actuales.</li>
+      <li>Un rival equivocado cuenta como error. Con 3 errores pierdes por KO técnico.</li>
+      <li>Cada pista agrega el siguiente peleador de una ruta óptima. Tienes 2.</li>
     </ol>
-    <p id="dbinfo"></p>
+    <p class="fine" id="dbinfo"></p>
   </details>
 
   <details id="rk-wrap">
     <summary id="rk-sum">Rankings actuales</summary>
     <div class="rk" id="rankings"></div>
   </details>
-</div>
-
+</main>
 
 <script>
 function init(D) {
 // ---------- datos ----------
-const NAMES = D.fighters.map(f => f[0]);
-const NF = D.fighters.map(f => f[1]);
+const F = D.fighters;
+const NAMES = F.map(f => f[0]);
+const NF = F.map(f => f[1]);
 const N = NAMES.length;
-// ADJ[i] = Map(rival -> [índices de peleas])
+const DATA_KEY = D.updated + "/" + N;
 const ADJ = Array.from({length: N}, () => new Map());
 D.fights.forEach((f, k) => {
   const [a, b] = f;
@@ -221,23 +262,26 @@ D.fights.forEach((f, k) => {
   if (!ADJ[b].has(a)) ADJ[b].set(a, []);
   ADJ[a].get(b).push(k); ADJ[b].get(a).push(k);
 });
-// Rankings actuales: campeón (posición 0) y top 15 de cada división
-const DIV_ES = {"Heavyweight":"Peso pesado","Light Heavyweight":"Peso semipesado","Middleweight":"Peso medio","Welterweight":"Peso wélter","Lightweight":"Peso ligero","Featherweight":"Peso pluma","Bantamweight":"Peso gallo","Flyweight":"Peso mosca","Women's Strawweight":"Peso paja femenino","Women's Flyweight":"Peso mosca femenino","Women's Bantamweight":"Peso gallo femenino"};
+
+const DIV = {"Heavyweight":"Pesado","Light Heavyweight":"Semipesado","Middleweight":"Medio","Welterweight":"Wélter","Lightweight":"Ligero","Featherweight":"Pluma","Bantamweight":"Gallo","Flyweight":"Mosca","Super Heavyweight":"Superpesado","Women's Strawweight":"Paja femenino","Women's Flyweight":"Mosca femenino","Women's Bantamweight":"Gallo femenino","Women's Featherweight":"Pluma femenino","Open Weight":"Peso libre","Catch Weight":"Peso pactado"};
+const divName = d => DIV[d] || d || "";
 const RK = D.rankings;
 const RANK = new Map();
 if (RK) RK.divisions.forEach(([div, ids]) => ids.forEach((i, pos) => { if (i >= 0 && (!RANK.has(i) || pos < RANK.get(i).pos)) RANK.set(i, {div, pos}); }));
 const RANKED = new Set(RANK.keys());
-const rankShort = i => { const r = RANK.get(i); return r ? (r.pos === 0 ? "Campeón" : "#" + r.pos) : ""; };
-const rankLabel = i => { const r = RANK.get(i); return r ? `${rankShort(i)} ${DIV_ES[r.div] || r.div}` : ""; };
+const isChamp = i => RANK.has(i) && RANK.get(i).pos === 0;
+const rankText = i => { const r = RANK.get(i); return r ? (r.pos === 0 ? `Campeón ${divName(r.div).toLowerCase()}` : `#${r.pos} ${divName(r.div).toLowerCase()}`) : ""; };
 let POOLMODE = "all";
 const allowFor = pool => pool === "ranked" ? RANKED : null;
 
 const norm = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const NORM = NAMES.map(norm);
 const BY_NORM = new Map(NAMES.map((n, i) => [NORM[i], i]));
+const shown = i => NAMES[i].replace(/\s*\([^)]*\)$/, "");
+const nick = i => F[i][2] || "";
 
 const METHOD = {"KO":"KO/TKO","TKO-M":"TKO por decisión médica","SUB":"sumisión","DEC-U":"decisión unánime","DEC-D":"decisión dividida","DEC-M":"decisión mayoritaria","DQ":"descalificación","CNC":"lesión (no pudo continuar)","OTRO":"otro método"};
-const MONTHS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
 function bfs(src, blocked, allow) {
   const dist = new Int16Array(N).fill(-1), prev = new Int32Array(N).fill(-1);
@@ -251,16 +295,10 @@ function bfs(src, blocked, allow) {
   }
   return {dist, prev};
 }
-function pathTo(prev, src, dst) {
-  const p = [dst]; let c = dst;
-  while (c !== src) { c = prev[c]; if (c < 0) return null; p.push(c); }
-  return p.reverse();
-}
-
+function pathTo(prev, src, dst) { const p = [dst]; let c = dst; while (c !== src) { c = prev[c]; if (c < 0) return null; p.push(c); } return p.reverse(); }
 function rngFrom(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
 function hashStr(s){ let h=2166136261; for(const c of s){ h^=c.charCodeAt(0); h=Math.imul(h,16777619);} return h>>>0; }
 
-// Retos solo entre peleadores con carrera larga en UFC, para que sean reconocibles
 const POOL = NAMES.map((_, i) => i).filter(i => NF[i] >= 12);
 function pickPair(rng, d, pool) {
   const allow = allowFor(pool), cand = pool === "ranked" ? [...RANKED].sort((a, b) => a - b) : POOL;
@@ -273,10 +311,75 @@ function pickPair(rng, d, pool) {
   return null;
 }
 
-// ---------- texto de una pelea ----------
+// ---------- ficha del peleador ----------
+const now = new Date();
+function age(i) {
+  const b = F[i][10]; if (!b) return 0;
+  const [y, m, d] = b.split("-").map(Number);
+  let a = now.getFullYear() - y; if (now.getMonth() + 1 < m || (now.getMonth() + 1 === m && now.getDate() < d)) a--;
+  return a;
+}
+const STANCE = {O: "Ortodoxa", S: "Zurda", W: "Cambiante"};
+const record = i => `${F[i][7]}-${F[i][8]}${F[i][9] ? "-" + F[i][9] : ""}`;
+
+function initials(name) {
+  const t = name.replace(/\s*\([^)]*\)$/, "").split(/\s+/).filter(w => !/^(jr\.?|sr\.?|ii|iii)$/i.test(w));
+  if (t.length === 1) return t[0].slice(0, 2).toUpperCase();
+  return (t[0][0] + t[t.length - 1][0]).toUpperCase();
+}
+function splitName(name) {
+  const t = name.replace(/\s*\([^)]*\)$/, "").split(/\s+/);
+  if (t.length === 1) return ["", t[0]];
+  let k = t.length - 1;
+  if (k > 1 && /^(jr\.?|sr\.?|ii|iii)$/i.test(t[k])) k--;
+  if (k > 1 && /^(de|da|dos|do|del|van|von|la)$/i.test(t[k - 1])) k--;
+  return [t.slice(0, k).join(" "), t.slice(k).join(" ")];
+}
+
+// Escudo de semitono: puntos de impresión generados a partir del nombre, únicos por peleador
+function crest(i, tone, cls) {
+  return `<canvas class="crest${cls ? " " + cls : ""}" data-f="${i}" data-tone="${tone}" aria-hidden="true"></canvas>`;
+}
+function paintCrests(root) {
+  const css = getComputedStyle(document.documentElement);
+  const color = n => css.getPropertyValue("--" + n).trim();
+  (root || document).querySelectorAll("canvas.crest").forEach(c => {
+    const i = +c.dataset.f, col = color(c.dataset.tone), paper = color("sheet"), gold = color("gold");
+    const s = c.clientWidth || 48, dpr = Math.min(2, window.devicePixelRatio || 1);
+    c.width = Math.round(s * dpr); c.height = Math.round(s * dpr);
+    const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, s, s);
+    const k = s * 0.29;
+    const oct = (m) => { g.beginPath(); g.moveTo(k + m * .4, m); g.lineTo(s - k - m * .4, m); g.lineTo(s - m, k + m * .4); g.lineTo(s - m, s - k - m * .4); g.lineTo(s - k - m * .4, s - m); g.lineTo(k + m * .4, s - m); g.lineTo(m, s - k - m * .4); g.lineTo(m, k + m * .4); g.closePath(); };
+    g.save(); oct(0); g.clip(); g.fillStyle = paper; g.fillRect(0, 0, s, s);
+    const r = rngFrom(hashStr(NAMES[i]));
+    const ang = r() * Math.PI * 2, cx = .15 + r() * .7, cy = .15 + r() * .7, freq = 1.5 + r() * 2.5, ph = r() * 6.28, bias = r() * .2;
+    const step = Math.max(3.4, s / 16), c45 = Math.SQRT1_2;
+    g.fillStyle = col;
+    for (let y = -s * .25; y < s * 1.25; y += step) for (let x = -s * .25; x < s * 1.25; x += step) {
+      const px = s / 2 + (x - s / 2) * c45 - (y - s / 2) * c45, py = s / 2 + (x - s / 2) * c45 + (y - s / 2) * c45;
+      if (px < -step || py < -step || px > s + step || py > s + step) continue;
+      const u = px / s, v = py / s;
+      const lin = Math.cos(ang) * (u - .5) + Math.sin(ang) * (v - .5) + .5;
+      const rad = 1 - Math.hypot(u - cx, v - cy) * 1.4;
+      const wave = .5 + .5 * Math.sin((u * Math.cos(ang + 1.2) + v * Math.sin(ang + 1.2)) * freq * Math.PI + ph);
+      const val = Math.max(0, Math.min(1, .5 * lin + .35 * rad + .25 * wave - .12 + bias));
+      const rr = step * .62 * Math.sqrt(val);
+      if (rr > .35) { g.beginPath(); g.arc(px, py, rr, 0, 7); g.fill(); }
+    }
+    g.font = `900 ${Math.round(s * .44)}px "Big Shoulders Display", Impact, sans-serif`;
+    g.textAlign = "center"; g.textBaseline = "middle"; g.lineJoin = "round";
+    g.lineWidth = Math.max(3, s * .07); g.strokeStyle = paper; g.strokeText(initials(NAMES[i]), s / 2, s / 2 + s * .03);
+    g.fillStyle = col; g.fillText(initials(NAMES[i]), s / 2, s / 2 + s * .03);
+    g.restore();
+    const lw = s > 80 ? 3.5 : 2;
+    g.lineWidth = lw; g.strokeStyle = isChamp(i) ? gold : col; oct(lw / 2); g.stroke();
+    if (isChamp(i)) { g.lineWidth = lw * .6; oct(lw * 2.2); g.stroke(); }
+  });
+}
+
 function eventShort(name) {
   const head = name.split(":")[0].trim();
-  return /\d/.test(head) ? head : name.replace(/^UFC Fight Night:\s*/, "UFC FN: ");
+  return /\d/.test(head) ? head : name.replace(/^UFC Fight Night:\s*/, "UFC Fight Night, ");
 }
 function fightInfo(u, v) {
   const ks = ADJ[u].get(v) || [];
@@ -285,28 +388,19 @@ function fightInfo(u, v) {
   const [y, m] = evDate.split("-");
   let res;
   if (f[3] === -1) res = f[4] === "NC" ? "Sin resultado" : "Empate";
-  else res = `Ganó ${NAMES[f[f[3]]]} por ${METHOD[f[4]] || f[4]}${f[5] ? ` (R${f[5]})` : ""}`;
-  return {where: `${eventShort(evName)} · ${MONTHS[+m - 1]} ${y}`, res, count: ks.length};
+  else res = `Ganó ${shown(f[f[3]])} por ${METHOD[f[4]] || f[4]}${f[5] ? ` en el round ${f[5]}` : ""}`;
+  return {where: `${eventShort(evName)}, ${MONTHS[+m - 1]} de ${y}${ks.length > 1 ? `. Se enfrentaron ${ks.length} veces` : ""}`, res};
 }
 
 // ---------- fecha / reto diario ----------
-const now = new Date();
 const ymd = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const todayKey = ymd(now);
 const yesterdayKey = (() => { const y = new Date(now); y.setDate(y.getDate() - 1); return ymd(y); })();
 const dayNum = Math.max(1, Math.floor((Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - Date.UTC(2026, 10, 6)) / 864e5) + 1);
-const dateLabel = now.toLocaleDateString("es", {day: "numeric", month: "long", year: "numeric"});
 
 // ---------- almacenamiento ----------
 const KEY = "sgo-v3";
-function load() {
-  try {
-    const v3 = JSON.parse(localStorage.getItem(KEY));
-    if (v3) return v3;
-    const v2 = JSON.parse(localStorage.getItem("sgo-v2"));  // conservar estadísticas de la versión anterior
-    return v2 && v2.stats ? {stats: {all: v2.stats}} : {};
-  } catch (e) { return {}; }
-}
+function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
 function save(o){ try{ localStorage.setItem(KEY, JSON.stringify(o)); }catch(e){} }
 let store = load();
 store.stats = store.stats || {};
@@ -315,7 +409,7 @@ const statsFor = pool => (store.stats[pool] = store.stats[pool] || {played:0, wo
 
 // ---------- estado ----------
 const MAX_STEPS = 6, MAX_STRIKES = 3, MAX_HINTS = 2;
-let practiceDiff = 3, S;
+let practiceDiff = 3, S, enter = false;
 
 function newGame(mode) {
   const pool = POOLMODE;
@@ -323,8 +417,9 @@ function newGame(mode) {
   const want = mode === "daily" ? (pool === "ranked" ? 2 : 3) : practiceDiff;
   const [start, target, d] = pickPair(rng, want, pool) || pickPair(rng, 2, pool) || pickPair(rng, 3, pool);
   const {prev} = bfs(start, null, allowFor(pool));
-  S = {mode, pool, day: todayKey, data: D.updated, start, target, opt: d, optPath: pathTo(prev, start, target),
+  S = {mode, pool, day: todayKey, data: DATA_KEY, start, target, opt: d, optPath: pathTo(prev, start, target),
        chain: [start], hinted: [], strikes: 0, wrong: [], hints: 0, done: false, won: false, reason: ""};
+  enter = true;
 }
 function persistDaily(){ if (S.mode === "daily") { store.daily[S.pool] = S; save(store); } }
 
@@ -345,94 +440,125 @@ function finish(won, reason) {
 function guess(i) {
   if (S.done) return;
   const cur = S.chain[S.chain.length - 1];
-  if (S.chain.includes(i)) { say(`${NAMES[i]} ya está en tu cadena.`, "bad"); return; }
-  if (S.pool === "ranked" && !RANKED.has(i)) { say(`${NAMES[i]} no está rankeado ahora. En este modo solo cuentan los campeones y el top 15 actual.`, "bad"); return; }
+  if (S.chain.includes(i)) { say(`${shown(i)} ya está en tu cadena.`, "bad"); return; }
+  if (S.pool === "ranked" && !RANKED.has(i)) { say(`${shown(i)} no está rankeado ahora. En este modo solo cuentan los campeones y el top 15 actual.`, "bad"); return; }
   if (!ADJ[cur].has(i)) {
     S.strikes++; S.wrong.push(i); shake();
     const earlier = S.chain.slice(0, -1).filter(c => ADJ[c].has(i));
-    let m = `${NAMES[i]} nunca peleó contra ${NAMES[cur]} en UFC.`;
-    if (earlier.length) m += ` Sí peleó contra ${NAMES[earlier[earlier.length - 1]]}, pero la cadena sigue desde el último eslabón.`;
+    let m = `${shown(i)} nunca peleó contra ${shown(cur)} en UFC.`;
+    if (earlier.length) m += ` Sí peleó contra ${shown(earlier[earlier.length - 1])}, pero la cadena sigue desde el último peleador.`;
     if (S.strikes >= MAX_STRIKES) { say(m + " Tercer error.", "bad"); finish(false, "ko"); }
     else say(`${m} Error ${S.strikes} de ${MAX_STRIKES}.`, "bad");
     persistDaily(); render(); return;
   }
   S.chain.push(i);
   const steps = S.chain.length - 1;
-  if (i === S.target) { say(`¡Correcto! Llegaste a la esquina azul.`, "good"); finish(true); }
-  else if (steps >= MAX_STEPS) { say(`Usaste los seis grados sin llegar a ${NAMES[S.target]}.`, "bad"); finish(false, "time"); }
-  else say(`Correcto: ${NAMES[i]} peleó contra ${NAMES[cur]}.`, "good");
+  if (i === S.target) { say("Llegaste a la esquina azul.", "good"); finish(true); }
+  else if (steps >= MAX_STEPS) { say(`Usaste los seis grados sin llegar a ${shown(S.target)}.`, "bad"); finish(false, "time"); }
+  else say(`Correcto: ${shown(i)} peleó contra ${shown(cur)}.`, "good");
   persistDaily(); render(true);
 }
-
 function hint() {
   if (S.done || S.hints >= MAX_HINTS) return;
   const cur = S.chain[S.chain.length - 1];
   const r = bfs(cur, new Set(S.chain.slice(0, -1)), allowFor(S.pool));
   const p = pathTo(r.prev, cur, S.target);
-  if (!p) { say("Desde aquí no hay ruta sin repetir peleadores. Prueba deshacer.", "bad"); return; }
-  if (p.length - 1 + S.chain.length - 1 > MAX_STEPS) { say("Desde aquí ya no se llega en seis grados. Prueba deshacer.", "bad"); return; }
+  if (!p) { say("Desde aquí no hay ruta sin repetir peleadores. Usa Deshacer.", "bad"); return; }
+  if (p.length - 1 + S.chain.length - 1 > MAX_STEPS) { say("Desde aquí ya no se llega en seis grados. Usa Deshacer.", "bad"); return; }
   S.hints++; S.hinted.push(p[1]); guess(p[1]);
 }
-function undo(){ if (S.done || S.chain.length < 2) return; const r = S.chain.pop(); S.hinted = S.hinted.filter(h => h !== r); say(`Quitaste a ${NAMES[r]}.`); persistDaily(); render(); }
+function undo(){ if (S.done || S.chain.length < 2) return; const r = S.chain.pop(); S.hinted = S.hinted.filter(h => h !== r); say(`Quitaste a ${shown(r)}.`); persistDaily(); render(); }
 function quit(){ if (S.done) return; say(""); finish(false, "towel"); render(); }
 
-// ---------- UI ----------
+// ---------- interfaz ----------
 const $ = id => document.getElementById(id);
 function say(t, kind){ const m = $("msg"); m.textContent = t; m.className = "msg" + (kind ? " " + kind : ""); }
 function shake(){ const e = document.querySelector(".entry"); if (!e) return; e.classList.remove("shake"); void e.offsetWidth; e.classList.add("shake"); }
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function linkHtml(u, v) {
+function sideHtml(i, side) {
+  const [first, last] = splitName(NAMES[i]);
+  const rk = RANK.has(i) ? `<span class="fo-rank${isChamp(i) ? " champ" : ""}">${esc(rankText(i))}</span>` : "";
+  return `<div class="fo-side ${side}">
+    <div class="fo-crest">${crest(i, side)}${side === "blue" && S.done ? `<span class="stamp ${S.won ? "" : "lost"} pop">${S.won ? "Conectado" : "Sin conexión"}</span>` : ""}</div>
+    <span class="fo-corner">${side === "red" ? "Esquina roja, inicio" : "Esquina azul, objetivo"}</span>
+    <h2 class="fo-name">${first ? `<span class="first">${esc(first)}</span>` : ""}<span class="last">${esc(last)}</span></h2>
+    ${nick(i) ? `<p class="fo-nick">“${esc(nick(i))}”</p>` : ""}
+    ${rk}
+  </div>`;
+}
+function tapeRow(label, a, b, num) {
+  const na = v => v === "" || v === 0 || v == null;
+  let ca = "", cb = "";
+  if (num && !na(a) && !na(b) && a !== b) { if (a > b) ca = " adv"; else cb = " adv"; }
+  const fmt = (v, suf) => na(v) ? `<span class="na" aria-label="Sin dato">–</span>` : esc(v) + (suf || "");
+  const suf = num === "cm" ? " cm" : "";
+  return `<dd class="l${ca}">${fmt(a, suf)}</dd><dt>${label}</dt><dd class="r${cb}">${fmt(b, suf)}</dd>`;
+}
+function renderFaceoff() {
+  const a = S.start, b = S.target;
+  const label = S.mode === "daily" ? `Reto #${dayNum}${S.pool === "ranked" ? ", solo rankeados" : ""}` : `Práctica${S.pool === "ranked" ? ", solo rankeados" : ""}: la ruta más corta tiene ${S.opt} grados`;
+  $("faceoff").innerHTML = `<p class="fo-label">${label}</p>
+    <div class="fo-grid">${sideHtml(a, "red")}<div class="fo-vs" aria-hidden="true">vs</div>${sideHtml(b, "blue")}</div>
+    <dl class="tape">
+      ${tapeRow("Récord en UFC", record(a), record(b))}
+      ${tapeRow("Estatura", F[a][4], F[b][4], "cm")}
+      ${tapeRow("Alcance", F[a][5], F[b][5], "cm")}
+      ${tapeRow("Guardia", STANCE[F[a][6]] || "", STANCE[F[b][6]] || "")}
+      ${tapeRow("Edad", age(a), age(b))}
+      ${tapeRow("División", divName(RANK.has(a) ? RANK.get(a).div : F[a][3]), divName(RANK.has(b) ? RANK.get(b).div : F[b][3]))}
+    </dl>`;
+  const fo = $("faceoff");
+  fo.classList.remove("enter");
+  if (enter) { void fo.offsetWidth; fo.classList.add("enter"); enter = false; }
+}
+
+function fighterRow(i, tone, extra, meta) {
+  const m = meta != null ? meta : (RANK.has(i) ? rankText(i) : `${NF[i]} peleas`);
+  return `<div class="fighter ${extra || ""}">${crest(i, tone)}<div><div class="f-name">${esc(shown(i))}</div>${nick(i) ? `<div class="f-nick">“${esc(nick(i))}”</div>` : ""}</div><div class="f-meta${isChamp(i) ? " champ" : ""}">${esc(m)}</div></div>`;
+}
+function boutHtml(u, v) {
   const f = fightInfo(u, v);
-  return `<div class="link"><div class="fight"><small>${esc(f.where)}${f.count > 1 ? ` · ${f.count} peleas` : ""}</small><span>${esc(f.res)}</span></div></div>`;
+  return `<div class="bout"><p class="bout-ev">${esc(f.where)}</p><p class="bout-res">${esc(f.res)}</p></div>`;
 }
-
-const sub = i => `${NF[i]} peleas en UFC${RANK.has(i) ? " · " + rankLabel(i) : ""}`;
-
-function renderRankings() {
-  const box = $("rankings");
-  if (!RK) { $("rk-wrap").hidden = true; return; }
-  const [y, m, d] = RK.updated.split("-");
-  $("rk-sum").textContent = `Rankings actuales (al ${+d} de ${MONTHS[+m - 1]} de ${y})`;
-  box.innerHTML = RK.divisions.map(([div, ids]) => `<div class="rk-div"><h3>${esc(DIV_ES[div] || div)}</h3><ol>${ids.map((i, pos) => i < 0 ? "" :
-    `<li class="${S && S.chain.includes(i) ? "in" : ""}${S && (i === S.start || i === S.target) ? " end" : ""}"><span class="rk-n">${pos === 0 ? "C" : pos}</span>${esc(NAMES[i])}</li>`).join("")}</ol></div>`).join("");
-}
-
-let sugIndex = 0, sugList = [];
+function pips(n, on, cls) { return Array.from({length: n}, (_, k) => `<span class="pip${k < on ? " " + cls : ""}"></span>`).join(""); }
 
 function render(fresh) {
   const steps = S.chain.length - 1;
-  const poolTxt = S.pool === "ranked" ? "Solo rankeados" : "Toda la historia";
-  $("eyebrow").textContent = S.mode === "daily" ? `Reto diario #${dayNum} · ${poolTxt} · ${dateLabel}` : `Práctica · ${poolTxt} · ruta óptima de ${S.opt} grados`;
-  $("pool-all").setAttribute("aria-pressed", S.pool === "all");
-  $("pool-ranked").setAttribute("aria-pressed", S.pool === "ranked");
-  renderRankings();
   $("tab-daily").setAttribute("aria-pressed", S.mode === "daily");
   $("tab-practice").setAttribute("aria-pressed", S.mode === "practice");
+  $("pool-all").setAttribute("aria-pressed", S.pool === "all");
+  $("pool-ranked").setAttribute("aria-pressed", S.pool === "ranked");
   $("diff").hidden = S.mode !== "practice";
   $("diff").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.d === practiceDiff));
-  $("sb-steps").textContent = `${steps}/${MAX_STEPS}`;
-  $("sb-strikes").querySelectorAll("span").forEach((g, i) => g.classList.toggle("hit", i < S.strikes));
-  $("sb-hints").textContent = MAX_HINTS - S.hints;
+  $("pips-steps").innerHTML = pips(MAX_STEPS, steps, "on");
+  $("pips-steps").setAttribute("aria-label", `${steps} de ${MAX_STEPS} grados usados`);
+  $("pips-strikes").innerHTML = pips(MAX_STRIKES, S.strikes, "bad");
+  $("pips-strikes").setAttribute("aria-label", `${S.strikes} de ${MAX_STRIKES} errores`);
+  $("pips-hints").innerHTML = pips(MAX_HINTS, MAX_HINTS - S.hints, "hint");
+  $("pips-hints").setAttribute("aria-label", `${MAX_HINTS - S.hints} pistas disponibles`);
+  $("daylabel").textContent = S.mode === "daily" ? now.toLocaleDateString("es", {day: "numeric", month: "long"}) : "";
+  renderFaceoff();
 
   const reached = S.chain[S.chain.length - 1] === S.target;
-  let h = `<div class="corner red"><div class="oct"><span>R</span></div><div class="meta"><span class="side">Esquina roja · inicio</span><span class="name">${esc(NAMES[S.start])}</span><span class="sub">${sub(S.start)}</span></div></div>`;
+  let h = fighterRow(S.start, "red");
   const mids = S.chain.slice(1, reached ? -1 : undefined);
-  mids.forEach((n, i) => {
-    h += linkHtml(S.chain[i], n);
-    h += `<div class="step${S.hinted.includes(n) ? " hinted" : ""}${fresh && i === mids.length - 1 && !reached ? " fresh" : ""}"><div class="oct">${i + 1}</div><span class="nm">${esc(NAMES[n])}</span><span class="tag">${S.hinted.includes(n) ? "pista" : (RANK.has(n) ? esc(rankLabel(n)) : NF[n] + " peleas")}</span></div>`;
+  mids.forEach((n, k) => {
+    h += boutHtml(S.chain[k], n);
+    const cls = (S.hinted.includes(n) ? "hinted " : "") + (fresh && k === mids.length - 1 && !reached ? "fresh" : "");
+    h += fighterRow(n, "ink", cls, S.hinted.includes(n) ? "Pista" : null);
   });
   if (!S.done) {
     const cur = S.chain[S.chain.length - 1];
-    h += `<div class="link"><small>¿quién peleó contra él?</small></div>`;
-    h += `<div class="entry"><label for="guess">Un rival de <b>${esc(NAMES[cur])}</b></label><input id="guess" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Escribe un peleador…" role="combobox" aria-expanded="false" aria-controls="sugs"><ul class="sugs" id="sugs" role="listbox" hidden></ul></div>`;
-    h += `<div class="link"><small>…</small></div>`;
+    h += `<div class="bout open"><p class="bout-ev">Grado ${steps + 1}</p></div>`;
+    h += `<div class="entry"><label for="guess">¿Quién peleó contra <b>${esc(shown(cur))}</b>?</label><input id="guess" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Escribe un peleador" role="combobox" aria-expanded="false" aria-controls="sugs" aria-autocomplete="list"><ul class="sugs" id="sugs" role="listbox" hidden></ul></div>`;
+    h += `<div class="bout open"></div>`;
   } else if (reached) {
-    h += linkHtml(S.chain[S.chain.length - 2], S.target);
+    h += boutHtml(S.chain[S.chain.length - 2], S.target);
   } else {
-    h += `<div class="link"><small>…</small></div>`;
+    h += `<div class="bout open"></div>`;
   }
-  h += `<div class="corner blue${reached ? " reached" : ""}"><div class="oct"><span>A</span></div><div class="meta"><span class="side">Esquina azul · ${reached ? "¡alcanzada!" : "objetivo"}</span><span class="name">${esc(NAMES[S.target])}</span><span class="sub">${sub(S.target)}</span></div></div>`;
+  h += fighterRow(S.target, "blue", "goal" + (reached ? " reached" : ""));
   $("board").innerHTML = h;
 
   $("btn-hint").disabled = S.done || S.hints >= MAX_HINTS;
@@ -440,15 +566,16 @@ function render(fresh) {
   $("btn-quit").disabled = S.done;
   $("actions").hidden = S.done;
 
-  if (!S.done) wireInput();
   renderResult();
+  renderRankings();
+  paintCrests();
+  if (!S.done) wireInput();
 }
 
 function search(q) {
   const toks = norm(q).split(" ").filter(Boolean);
   if (!toks.length || toks.join("").length < 2) return [];
-  const out = [];
-  const allow = allowFor(S.pool);
+  const allow = allowFor(S.pool), out = [];
   for (let i = 0; i < N; i++) {
     if (allow && !allow.has(i)) continue;
     const n = NORM[i];
@@ -459,17 +586,18 @@ function search(q) {
   }
   return out.sort((a, b) => b[1] - a[1]).slice(0, 8).map(x => x[0]);
 }
-
+let sugIndex = 0, sugList = [];
 function wireInput() {
   const inp = $("guess"), ul = $("sugs");
   const show = () => {
     sugList = search(inp.value); sugIndex = 0;
     if (norm(inp.value).length < 2) { ul.hidden = true; inp.setAttribute("aria-expanded", "false"); return; }
-    if (!sugList.length) { ul.innerHTML = `<li><button type="button" disabled>${S.pool === "ranked" ? "Ningún peleador rankeado tiene ese nombre" : "No hay ningún peleador de UFC con ese nombre"}</button></li>`; ul.hidden = false; return; }
-    ul.innerHTML = sugList.map((n, i) => `<li><button type="button" role="option" data-n="${n}" aria-selected="${i === sugIndex}"><span class="${S.chain.includes(n) ? "used" : ""}">${esc(NAMES[n])}</span><small>${n === S.target ? "objetivo" : (RANK.has(n) ? esc(rankLabel(n)) : NF[n] + " peleas")}</small></button></li>`).join("");
+    if (!sugList.length) { ul.innerHTML = `<li class="s-empty">${S.pool === "ranked" ? "Ningún peleador rankeado tiene ese nombre." : "Ningún peleador de UFC tiene ese nombre."}</li>`; ul.hidden = false; return; }
+    ul.innerHTML = sugList.map((n, k) => `<li><button type="button" role="option" data-n="${n}" aria-selected="${k === sugIndex}">${crest(n, n === S.target ? "blue" : "ink")}<span class="s-name"><span class="${S.chain.includes(n) ? "used" : ""}">${esc(NAMES[n])}</span>${nick(n) ? `<small>“${esc(nick(n))}”</small>` : ""}</span><span class="s-meta">${n === S.target ? "Objetivo" : esc(RANK.has(n) ? rankText(n) : NF[n] + " peleas")}</span></button></li>`).join("");
     ul.hidden = false; inp.setAttribute("aria-expanded", "true");
+    paintCrests(ul);
   };
-  const mark = () => ul.querySelectorAll("button[role=option]").forEach((b, i) => b.setAttribute("aria-selected", i === sugIndex));
+  const mark = () => ul.querySelectorAll("button[role=option]").forEach((b, k) => b.setAttribute("aria-selected", k === sugIndex));
   inp.addEventListener("input", show);
   inp.addEventListener("keydown", e => {
     if (e.key === "ArrowDown" && sugList.length) { e.preventDefault(); sugIndex = (sugIndex + 1) % sugList.length; mark(); }
@@ -486,19 +614,19 @@ function choose(n){ guess(n); const i = $("guess"); if (i) i.focus({preventScrol
 function verdict() {
   if (S.won) { const d = (S.chain.length - 1) - S.opt;
     return d <= 0 ? ["Finalización en el primer round", "Igualaste la ruta más corta posible."]
-         : d === 1 ? ["Victoria por decisión unánime", "Un grado más que la ruta óptima."]
-         : d === 2 ? ["Victoria por decisión dividida", "Dos grados más que la ruta óptima."]
+         : d === 1 ? ["Victoria por decisión unánime", "Un grado más que la ruta más corta."]
+         : d === 2 ? ["Victoria por decisión dividida", "Dos grados más que la ruta más corta."]
          : ["Ganaste en el último segundo", "Llegaste, aunque había una ruta mucho más corta."]; }
   return S.reason === "ko" ? ["Derrota por KO técnico", "Tres rivales equivocados."]
-       : S.reason === "towel" ? ["Tiraste la toalla", "La esquina detuvo el combate."]
+       : S.reason === "towel" ? ["Tiraste la toalla", "Tu esquina detuvo el combate."]
        : ["Se acabaron los rounds", "Seis grados sin llegar a la esquina azul."];
 }
 function shareText() {
   const steps = S.chain.length - 1, mids = Math.max(0, S.chain.length - (S.won ? 2 : 1));
-  const head = (S.mode === "daily" ? `Seis Grados del Octágono #${dayNum}` : "Seis Grados del Octágono · práctica") + (S.pool === "ranked" ? " · Rankeados" : "");
-  return `${head}\n${NAMES[S.start]} → ${NAMES[S.target]}\n🔴${"🥊".repeat(mids)}${S.won ? "🔵" : "💥"}\nGrados: ${S.won ? steps : "–"} (óptimo ${S.opt}) · Errores: ${"❌".repeat(S.strikes)}${"⬜".repeat(MAX_STRIKES - S.strikes)}${S.hints ? ` · Pistas: ${S.hints}` : ""}`;
+  const head = (S.mode === "daily" ? `Seis Grados del Octágono #${dayNum}` : "Seis Grados del Octágono, práctica") + (S.pool === "ranked" ? " (rankeados)" : "");
+  return `${head}\n${shown(S.start)} vs ${shown(S.target)}\n🔴${"🥊".repeat(mids)}${S.won ? "🔵" : "💥"}\nGrados: ${S.won ? steps : "–"} (la ruta más corta: ${S.opt})\nErrores: ${"❌".repeat(S.strikes)}${"⬜".repeat(MAX_STRIKES - S.strikes)}${S.hints ? `\nPistas: ${S.hints}` : ""}`;
 }
-function chainText(p){ return p.map(i => esc(NAMES[i])).join(" → "); }
+const chainText = p => p.map(i => esc(shown(i))).join(", ");
 function renderResult() {
   const r = $("result");
   if (!S.done) { r.hidden = true; r.innerHTML = ""; return; }
@@ -506,61 +634,66 @@ function renderResult() {
   r.className = "result " + (S.won ? "won" : "lost");
   r.innerHTML = `
     <h2>${t}</h2><p>${sub}</p>
-    <div class="paths">
-      <div class="path"><span class="sb-label">Tu cadena</span>${chainText(S.chain)}</div>
-      <div class="path"><span class="sb-label">Una ruta óptima (${S.opt} grados)</span>${chainText(S.optPath)}</div>
-      ${S.wrong.length ? `<div class="path"><span class="sb-label">Errores</span>${S.wrong.map(i => esc(NAMES[i])).join(", ")}</div>` : ""}
-    </div>
+    <p class="path"><b>Tu cadena</b>${chainText(S.chain)}</p>
+    <p class="path"><b>Una ruta más corta (${S.opt} grados)</b>${chainText(S.optPath)}</p>
+    ${S.wrong.length ? `<p class="path"><b>Errores</b>${S.wrong.map(i => esc(shown(i))).join(", ")}</p>` : ""}
     <pre class="share" id="share">${esc(shareText())}</pre>
     <div class="actions">
       <button class="btn primary" id="btn-copy">Copiar resultado</button>
       ${S.mode === "practice" ? `<button class="btn" id="btn-again">Otro combate</button>` : `<button class="btn" id="btn-topractice">Jugar práctica</button>`}
     </div>
-    ${S.mode === "daily" ? `<div class="stats"><div><b>${st.played}</b><span>jugados</span></div><div><b>${st.played ? Math.round(st.won / st.played * 100) : 0}%</b><span>victorias</span></div><div><b>${st.streak}</b><span>racha</span></div><div><b>${st.best}</b><span>mejor racha</span></div></div><p style="color:var(--muted);font-size:13px;margin:0">Nuevo reto mañana.</p>` : ""}`;
+    ${S.mode === "daily" ? `<div class="stats"><div><b>${st.played}</b><span>Jugados</span></div><div><b>${st.played ? Math.round(st.won / st.played * 100) : 0}%</b><span>Victorias</span></div><div><b>${st.streak}</b><span>Racha</span></div><div><b>${st.best}</b><span>Mejor racha</span></div></div><p class="fine">Mañana hay un reto nuevo.</p>` : ""}`;
   r.hidden = false;
   $("btn-copy").onclick = () => {
     const b = $("btn-copy");
-    const fallback = () => { const sel = window.getSelection(), rg = document.createRange(); rg.selectNodeContents($("share")); sel.removeAllRanges(); sel.addRange(rg); b.textContent = "Texto seleccionado: cópialo"; };
+    const fallback = () => { const sel = window.getSelection(), rg = document.createRange(); rg.selectNodeContents($("share")); sel.removeAllRanges(); sel.addRange(rg); b.textContent = "Texto seleccionado, cópialo"; };
     try { navigator.clipboard.writeText(shareText()).then(() => { b.textContent = "Copiado"; }, fallback); } catch (e) { fallback(); }
   };
   const again = $("btn-again"); if (again) again.onclick = () => { newGame("practice"); say(""); render(); };
   const tp = $("btn-topractice"); if (tp) tp.onclick = () => switchMode("practice");
 }
+function renderRankings() {
+  if (!RK) { $("rk-wrap").hidden = true; return; }
+  const [y, m, d] = RK.updated.split("-");
+  $("rk-sum").textContent = `Rankings actuales, al ${+d} de ${MONTHS[+m - 1]} de ${y}`;
+  $("rankings").innerHTML = RK.divisions.map(([div, ids]) => `<div><h3>${esc(divName(div))}</h3><ol>${ids.map((i, pos) => i < 0 ? "" :
+    `<li class="${S.chain.includes(i) ? "in" : ""}${i === S.start || i === S.target ? " end" : ""}"><span class="rk-n${pos === 0 ? " c" : ""}">${pos === 0 ? "C" : pos}</span>${esc(shown(i))}</li>`).join("")}</ol></div>`).join("");
+}
 
 function switchMode(m) {
   if (m === "daily") {
     const sd = store.daily[POOLMODE];
-    if (sd && sd.day === todayKey && sd.data === D.updated && sd.pool === POOLMODE) S = sd;
+    if (sd && sd.day === todayKey && sd.data === DATA_KEY && sd.pool === POOLMODE) { S = sd; enter = true; }
     else { newGame("daily"); persistDaily(); }
   } else newGame("practice");
   say(""); render();
 }
-
 function setPool(p) {
-  if (p === POOLMODE && S && S.pool === p) return;
+  if (S && S.pool === p) return;
   POOLMODE = p; store.pool = p; save(store);
   switchMode(S ? S.mode : "daily");
 }
 $("pool-all").onclick = () => setPool("all");
 $("pool-ranked").onclick = () => setPool("ranked");
 if (!RANKED.size) $("pool").hidden = true;
-
 $("tab-daily").onclick = () => switchMode("daily");
 $("tab-practice").onclick = () => switchMode("practice");
 $("diff").addEventListener("click", e => { const b = e.target.closest("button[data-d]"); if (!b) return; practiceDiff = +b.dataset.d; newGame("practice"); say(""); render(); });
 $("btn-hint").onclick = hint; $("btn-undo").onclick = undo; $("btn-quit").onclick = quit;
 {
   const [y, m, d] = D.updated.split("-");
-  $("dbinfo").textContent = `Datos oficiales de UFCStats.com (vía el proyecto abierto Greco1899/scrape_ufc_stats), actualizados al ${+d} de ${MONTHS[+m - 1]} de ${y}: ${N.toLocaleString("es")} peleadores y ${D.fights.length.toLocaleString("es")} peleas. Solo cuentan peleas dentro de UFC; las de PRIDE, Strikeforce, Bellator u otras organizaciones no conectan.${RK ? ` Rankings: campeones y top 15 de las 11 divisiones según el ranking oficial de UFC.` : ""}`;
+  $("dbinfo").textContent = `Datos de UFCStats.com, a través del proyecto abierto Greco1899/scrape_ufc_stats, actualizados al ${+d} de ${MONTHS[+m - 1]} de ${y}: ${N.toLocaleString("es")} peleadores y ${D.fights.length.toLocaleString("es")} peleas. Solo cuentan peleas dentro de UFC. Rankings oficiales de ufc.com. Los escudos se generan a partir del nombre de cada peleador.`;
 }
 
-function start(data) {
-  if (data && data.S && data.S.data === D.updated && data.S.pool) { S = data.S; POOLMODE = S.pool; if (data.practiceDiff) practiceDiff = data.practiceDiff; render(); }
-  else { if (store.pool === "ranked" && RANKED.size) POOLMODE = "ranked"; switchMode("daily"); }
-}
-window.claude?.hot?.snapshot?.(() => ({S, practiceDiff}));
-window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+// Repintar los escudos cuando cambia el tema, el tamaño o terminan de cargar las fuentes
+const repaint = () => paintCrests();
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change", repaint);
+new MutationObserver(repaint).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(repaint, 150); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(repaint);
 
+if (store.pool === "ranked" && RANKED.size) POOLMODE = "ranked";
+switchMode("daily");
 }
 
 // Los datos se cargan aparte: el workflow de GitHub reemplaza data/game_data.json cada semana
@@ -568,9 +701,10 @@ fetch("data/game_data.json?h=" + Math.floor(Date.now() / 36e5))
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then(init)
   .catch(err => {
-    document.getElementById("board").innerHTML =
-      '<p class="msg bad">No se pudieron cargar las peleas (' + err.message + '). Recarga la página en un momento.</p>';
+    document.getElementById("faceoff").innerHTML =
+      '<p class="fo-label">No se pudieron cargar las peleas (' + err.message + '). Recarga la página en un momento.</p>';
   });
 </script>
+<!--/BODY-->
 </body>
 </html>

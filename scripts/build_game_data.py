@@ -28,7 +28,7 @@ from collections import Counter, defaultdict, deque
 from datetime import date, datetime
 
 RAW = "https://raw.githubusercontent.com/Greco1899/scrape_ufc_stats/main/"
-FILES = ["ufc_event_details.csv", "ufc_fight_results.csv", "ufc_fighter_details.csv"]
+FILES = ["ufc_event_details.csv", "ufc_fight_results.csv", "ufc_fighter_details.csv", "ufc_fighter_tott.csv"]
 
 METHODS = {  # método original -> código corto que usa el juego
     "KO/TKO": "KO", "TKO - Doctor's Stoppage": "TKO-M", "Submission": "SUB",
@@ -100,6 +100,46 @@ def load_rankings(path: str, fighters: list[str]) -> dict | None:
     return {"updated": r.get("updated", ""), "divisions": divisions}
 
 
+def to_cm(text: str) -> int:
+    """Convierte 5' 11" o 72" a centímetros; 0 si no hay dato."""
+    feet = re.search(r"(\d+)'", text or "")
+    inches = re.search(r"(\d+(?:\.\d+)?)\"", text or "")
+    total = (int(feet.group(1)) * 12 if feet else 0) + (float(inches.group(1)) if inches else 0)
+    return round(total * 2.54) if total else 0
+
+
+def load_profiles(d: dict, dup_names: set) -> dict:
+    """Apodo, estatura, alcance, guardia y nacimiento por nombre (UFCStats los une por URL)."""
+    by_url = {r["URL"].strip(): r for r in d["ufc_fighter_tott.csv"]}
+    out = {}
+    for r in d["ufc_fighter_details.csv"]:
+        name = clean(f"{r['FIRST']} {r['LAST']}")
+        if name in dup_names:   # dos personas con el mismo nombre: no se puede saber de quién es cada ficha
+            continue
+        t = by_url.get(r["URL"].strip(), {})
+        born = ""
+        try:
+            born = datetime.strptime(clean(t.get("DOB", "")), "%b %d, %Y").date().isoformat()
+        except ValueError:
+            pass
+        stance = clean(t.get("STANCE", ""))
+        out[name] = {
+            "nick": clean(r.get("NICKNAME", "")),
+            "height": to_cm(t.get("HEIGHT", "")),
+            "reach": to_cm(t.get("REACH", "")),
+            "stance": {"Orthodox": "O", "Southpaw": "S", "Switch": "W"}.get(stance, ""),
+            "born": born,
+        }
+    return out
+
+
+def fighter_row(name: str, fights: int, rec: list, divs: Counter, p: dict) -> list:
+    main_div = next((dv for dv, _ in divs.most_common() if dv not in ("Catch Weight", "Open Weight")), "")
+    main_div = main_div or (divs.most_common(1)[0][0] if divs else "")
+    return [name, fights, p.get("nick", ""), main_div, p.get("height", 0), p.get("reach", 0),
+            p.get("stance", ""), rec[0], rec[1], rec[2], p.get("born", "")]
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--local", help="carpeta con los CSV ya descargados")
@@ -126,11 +166,17 @@ def main() -> None:
     full = Counter(clean(f"{r['FIRST']} {r['LAST']}") for r in d["ufc_fighter_details.csv"])
     dup_names = {n for n, c in full.items() if c > 1}
 
+    known = ["Super Heavyweight", "Light Heavyweight", "Heavyweight", "Middleweight", "Welterweight",
+             "Lightweight", "Featherweight", "Bantamweight", "Flyweight", "Strawweight", "Catch Weight"]
+
     def division(wc: str) -> str:
-        wc = clean(wc).replace(" Bout", "")
-        wc = re.sub(r"^(UFC|Ultimate Fighter.*?|TUF.*?)\s+", "", wc)
-        wc = re.sub(r"\s*(Title|Tournament|Interim|Championship).*$", "", wc, flags=re.I)
-        return wc or "Catch Weight"
+        """'UFC Women's Flyweight Title Bout' -> "Women's Flyweight"; torneos sin división -> 'Open Weight'."""
+        wc = clean(wc)
+        women = "Women's " if "women" in wc.lower() else ""
+        for k in known:  # el orden importa: "Light Heavyweight" antes que "Heavyweight"
+            if k.lower() in wc.lower():
+                return women + k
+        return "Open Weight"
 
     rows, skipped = [], 0
     for r in d["ufc_fight_results.csv"]:
@@ -149,16 +195,23 @@ def main() -> None:
         winner = 0 if out == "W/L" else 1 if out == "L/W" else -1
         rd = clean(r["ROUND"])
         rows.append((events[ev], ev, a, b, winner, METHODS.get(clean(r["METHOD"]), "OTRO"),
-                     int(rd) if rd.isdigit() else 0))
+                     int(rd) if rd.isdigit() else 0, div))
 
     if len(rows) < args.min_fights:
         sys.exit(f"Error: solo se leyeron {len(rows)} peleas (mínimo {args.min_fights}). "
                  "Los datos de origen parecen incompletos; no se genera el archivo.")
     rows.sort(key=lambda x: x[0])
     fight_count = Counter()
-    for _, _, a, b, *_ in rows:
+    record = defaultdict(lambda: [0, 0, 0])      # victorias, derrotas, otros (empate / sin resultado)
+    divs = defaultdict(Counter)
+    for _, _, a, b, w, _, _, div in rows:
         fight_count[a] += 1
         fight_count[b] += 1
+        for side, name in ((0, a), (1, b)):
+            divs[name][div] += 1
+            record[name][2 if w == -1 else (0 if w == side else 1)] += 1
+
+    profiles = load_profiles(d, dup_names)
 
     fighters = sorted(fight_count, key=lambda n: n.lower())
     fidx = {n: i for i, n in enumerate(fighters)}
@@ -168,14 +221,15 @@ def main() -> None:
     rankings = load_rankings(args.rankings, fighters)
 
     game = {
-        "v": 3,
+        "v": 4,
         "rankings": rankings,
         "source": "UFCStats.com vía github.com/Greco1899/scrape_ufc_stats",
         "updated": ev_order[-1][0].isoformat() if ev_order else "",
-        "fighters": [[n, fight_count[n]] for n in fighters],
+        # [nombre, peleas, apodo, división principal, estatura cm, alcance cm, guardia, V, D, otros, nacimiento]
+        "fighters": [fighter_row(n, fight_count[n], record[n], divs[n], profiles.get(n, {})) for n in fighters],
         "events": [[ev, dt.isoformat()] for dt, ev in ev_order],
         # [peleador A, peleador B, evento, ganador (0=A, 1=B, -1=empate/sin resultado), método, round]
-        "fights": [[fidx[a], fidx[b], eidx[ev], w, m, rd] for _, ev, a, b, w, m, rd in rows],
+        "fights": [[fidx[a], fidx[b], eidx[ev], w, m, rd] for _, ev, a, b, w, m, rd, _ in rows],
     }
     out = pathlib.Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
