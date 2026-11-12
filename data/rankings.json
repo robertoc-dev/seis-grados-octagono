@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07",
+  "updated": "2026-11-12",
   "source": "ufc.com/rankings (ranking oficial de medios de UFC)",
   "divisions": {
     "Heavyweight": [
@@ -9,13 +9,13 @@
       "Alex Pereira",
       "Sergei Pavlovich",
       "Josh Hokit",
-      "Curtis Blaydes",
       "Rizvan Kuniev",
-      "Waldo Cortes Acosta",
+      "Curtis Blaydes",
+      "Johnny Walker",
       "Vitor Petrino",
       "Mario Pinto",
       "Valter Walker",
-      "Johnny Walker",
+      "Waldo Cortes Acosta",
       "Brando Peričić",
       "Serghei Spivac",
       "Anthony Wint"
@@ -101,14 +101,14 @@
       "Jean Silva",
       "Arnold Allen",
       "Pat Sabatini",
-      "Pavel Andrusca",
       "Youssef Zalal",
       "Aaron Pico",
       "Kevin Vallejos",
       "Joanderson Brito",
       "Melquizael Costa",
       "Steve Garcia",
-      "Jamall Emmers"
+      "Jamall Emmers",
+      "Patricio Pitbull"
     ],
     "Bantamweight": [
       "Petr Yan",
@@ -148,9 +148,9 @@
     ],
     "Women's Strawweight": [
       "Mackenzie Dern",
+      "Tatiana Suarez",
       "Zhang Weili",
       "Virna Jandiroba",
-      "Tatiana Suarez",
       "Denise Gomes",
       "Gillian Robertson",
       "Fatima Kline",
@@ -177,9 +177,9 @@
       "Maycee Barber",
       "Tracy Cortez",
       "Casey O'Neill",
+      "Karine Silva",
       "Miranda Maverick",
       "Regina Tarin",
-      "Karine Silva",
       "Carli Judice"
     ],
     "Women's Bantamweight": [
