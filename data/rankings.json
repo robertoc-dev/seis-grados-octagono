@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12",
+  "updated": "2026-11-19",
   "source": "ufc.com/rankings (ranking oficial de medios de UFC)",
   "divisions": {
     "Heavyweight": [
@@ -44,8 +44,8 @@
       "Dricus Du Plessis",
       "Nassourdine Imavov",
       "Brendan Allen",
-      "Joe Pyfer",
       "Caio Borralho",
+      "Joe Pyfer",
       "Gregory Rodrigues",
       "Anthony Hernandez",
       "Abus Magomedov",
@@ -67,12 +67,12 @@
       "Belal Muhammad",
       "Mike Malott",
       "Uroš Medić",
+      "Kevin Holland",
       "Leon Edwards",
       "Kamaru Usman",
       "Joaquin Buckley",
       "Yaroslav Amosov",
-      "Jacobe Smith",
-      "Kevin Holland"
+      "Jacobe Smith"
     ],
     "Lightweight": [
       "Justin Gaethje",
@@ -105,10 +105,10 @@
       "Aaron Pico",
       "Kevin Vallejos",
       "Joanderson Brito",
-      "Melquizael Costa",
       "Steve Garcia",
       "Jamall Emmers",
-      "Patricio Pitbull"
+      "Patricio Pitbull",
+      "Nathaniel Wood"
     ],
     "Bantamweight": [
       "Petr Yan",
@@ -187,18 +187,18 @@
       "Joselyne Edwards",
       "Ailin Perez",
       "Luana Santos",
-      "Norma Dumont",
       "Julianna Peña",
+      "Bia Mesquita",
       "Jacqueline Cavalcanti",
       "Michelle Montague",
       "Yana Santos",
       "Chelsea Chandler",
       "Karol Rosa",
-      "Bia Mesquita",
       "Alice Pereira",
       "Nora Cornolle",
-      "Macy Chiasson",
-      "Melissa Croden"
+      "Melissa Croden",
+      "Nina Milošević",
+      "Macy Chiasson"
     ]
   },
   "_nota": "En cada lista, la posición 0 es el campeón y las siguientes son #1 a #15. Para actualizar, edita los nombres y vuelve a correr build_game_data.py. 'aliases' traduce nombres del ranking a como aparecen en UFCStats.",
