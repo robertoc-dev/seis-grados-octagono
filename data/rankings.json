@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-19",
+  "updated": "2026-11-22",
   "source": "ufc.com/rankings (ranking oficial de medios de UFC)",
   "divisions": {
     "Heavyweight": [
@@ -66,8 +66,8 @@
       "Gabriel Bonfim",
       "Belal Muhammad",
       "Mike Malott",
-      "Uroš Medić",
       "Kevin Holland",
+      "Uroš Medić",
       "Leon Edwards",
       "Kamaru Usman",
       "Joaquin Buckley",
@@ -150,7 +150,6 @@
       "Mackenzie Dern",
       "Tatiana Suarez",
       "Zhang Weili",
-      "Virna Jandiroba",
       "Denise Gomes",
       "Gillian Robertson",
       "Fatima Kline",
@@ -162,7 +161,8 @@
       "Mizuki",
       "Tabatha Ricci",
       "Amanda Lemos",
-      "Sam Hughes"
+      "Sam Hughes",
+      "Talita Alencar"
     ],
     "Women's Flyweight": [
       "Natalia Silva",
